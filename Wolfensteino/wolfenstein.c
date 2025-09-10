@@ -15,5 +15,8 @@ void Wolfenstein_Tic( Wolfenstein_t* wolf )
 
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf )
 {
+   // MUFFINS: for testing purposes
+   Screen_WipeColor( &wolf->screen, COLOR_BLUE );
+
    Screen_RenderBuffer( &wolf->screen );
 }

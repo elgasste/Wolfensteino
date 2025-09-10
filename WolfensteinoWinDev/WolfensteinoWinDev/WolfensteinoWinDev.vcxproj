@@ -142,11 +142,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
-    <ClCompile Include="clock.c" />
+    <ClCompile Include="..\..\Wolfensteino\wolfenstein.c" />
+    <ClCompile Include="win_clock.c" />
     <ClCompile Include="win_main.c" />
     <ClCompile Include="win_pixel_buffer.c" />
     <ClCompile Include="win_screen.c" />
-    <ClCompile Include="wolfenstein.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

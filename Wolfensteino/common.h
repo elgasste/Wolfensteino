@@ -57,7 +57,7 @@ extern "C"
 {
 #endif
 
-   void Program_Log( const char* msg );
+void Program_Log( const char* msg );
 
 #if defined( __cplusplus )
 }

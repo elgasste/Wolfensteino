@@ -18,9 +18,39 @@
     <ClInclude Include="win_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Wolfensteino\clock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Wolfensteino\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Wolfensteino\screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Wolfensteino\wolfenstein.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win_pixel_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Wolfensteino\screen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win_pixel_buffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win_screen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Wolfensteino\wolfenstein.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win_clock.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

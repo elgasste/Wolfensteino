@@ -116,6 +116,11 @@ int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    return 0;
 }
 
+void Program_Log( const char* msg )
+{
+   OutputDebugStringA( msg );
+}
+
 internal LRESULT CALLBACK MainWindowProc( _In_ HWND hWnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam )
 {
    LRESULT result = 0;
