@@ -2,6 +2,7 @@
 
 internal void Map_LoadLinedef( Linedef_t* linedef, r32 startX, r32 startY, r32 endX, r32 endY, u16 color );
 internal void Map_LoadLineseg( Lineseg_t* lineseg, Linedef_t* linedef, r32 startX, r32 startY, r32 endX, r32 endY );
+internal void Map_LoadBspNode( BspNode_t* node, Bool_t isLeaf, Linedef_t* linedef, Subsector_t* subsector, BspNode_t* parent, BspNode_t* leftChild, BspNode_t* rightChild );
 
 void Map_Load( Map_t* map )
 {
@@ -200,6 +201,187 @@ void Map_Load( Map_t* map )
    map->subsectors[29].linesegCount = 2;
    Map_LoadLineseg( &map->subsectors[29].linesegs[0], &map->sectors[0].linedefs[0], 170, 0, 230, 0 );
    Map_LoadLineseg( &map->subsectors[29].linesegs[1], &map->sectors[2].linedefs[0], 230, 60, 170, 60 );
+
+   /*************************** BSP TREE ***************************/
+
+   map->bspTree.nodeCount = 59;
+
+   // C5 (this is the root node)
+   Map_LoadBspNode( &map->bspTree.nodes[0], False, &map->sectors[5].linedefs[2], 0, 0, &map->bspTree.nodes[24], &map->bspTree.nodes[1] );
+
+   // G1
+   Map_LoadBspNode( &map->bspTree.nodes[1], False, &map->sectors[1].linedefs[6], 0, &map->bspTree.nodes[0], &map->bspTree.nodes[17], &map->bspTree.nodes[2] );
+
+   // H1
+   Map_LoadBspNode( &map->bspTree.nodes[2], False, &map->sectors[1].linedefs[7], 0, &map->bspTree.nodes[1], &map->bspTree.nodes[12], &map->bspTree.nodes[3] );
+
+   // L0
+   Map_LoadBspNode( &map->bspTree.nodes[3], False, &map->sectors[0].linedefs[11], 0, &map->bspTree.nodes[2], &map->bspTree.nodes[9], &map->bspTree.nodes[4] );
+
+   // F1
+   Map_LoadBspNode( &map->bspTree.nodes[4], False, &map->sectors[1].linedefs[5], 0, &map->bspTree.nodes[3], &map->bspTree.nodes[6], &map->bspTree.nodes[5] );
+
+   // 1
+   Map_LoadBspNode( &map->bspTree.nodes[5], True, 0, &map->subsectors[0], &map->bspTree.nodes[4], 0, 0 );
+
+   // E1
+   Map_LoadBspNode( &map->bspTree.nodes[6], False, &map->sectors[1].linedefs[4], 0, &map->bspTree.nodes[4], &map->bspTree.nodes[8], &map->bspTree.nodes[7] );
+
+   // 2
+   Map_LoadBspNode( &map->bspTree.nodes[7], True, 0, &map->subsectors[1], &map->bspTree.nodes[6], 0, 0 );
+
+   // 3
+   Map_LoadBspNode( &map->bspTree.nodes[8], True, 0, &map->subsectors[2], &map->bspTree.nodes[6], 0, 0 );
+
+   // K0
+   Map_LoadBspNode( &map->bspTree.nodes[9], False, &map->sectors[0].linedefs[10], 0, &map->bspTree.nodes[3], &map->bspTree.nodes[11], &map->bspTree.nodes[10] );
+
+   // 4
+   Map_LoadBspNode( &map->bspTree.nodes[10], True, 0, &map->subsectors[3], &map->bspTree.nodes[9], 0, 0 );
+
+   // 5
+   Map_LoadBspNode( &map->bspTree.nodes[11], True, 0, &map->subsectors[4], &map->bspTree.nodes[9], 0, 0 );
+
+   // I1
+   Map_LoadBspNode( &map->bspTree.nodes[12], False, &map->sectors[1].linedefs[8], 0, &map->bspTree.nodes[2], &map->bspTree.nodes[16], &map->bspTree.nodes[13] );
+
+   // J0
+   Map_LoadBspNode( &map->bspTree.nodes[13], False, &map->sectors[0].linedefs[9], 0, &map->bspTree.nodes[12], &map->bspTree.nodes[15], &map->bspTree.nodes[14] );
+
+   // 6
+   Map_LoadBspNode( &map->bspTree.nodes[14], True, 0, &map->subsectors[5], &map->bspTree.nodes[13], 0, 0 );
+
+   // 7
+   Map_LoadBspNode( &map->bspTree.nodes[15], True, 0, &map->subsectors[6], &map->bspTree.nodes[13], 0, 0 );
+
+   // 8
+   Map_LoadBspNode( &map->bspTree.nodes[16], True, 0, &map->subsectors[7], &map->bspTree.nodes[12], 0, 0 );
+
+   // B1
+   Map_LoadBspNode( &map->bspTree.nodes[17], False, &map->sectors[1].linedefs[1], 0, &map->bspTree.nodes[1], &map->bspTree.nodes[21], &map->bspTree.nodes[18] );
+
+   // D1
+   Map_LoadBspNode( &map->bspTree.nodes[18], False, &map->sectors[1].linedefs[3], 0, &map->bspTree.nodes[17], &map->bspTree.nodes[20], &map->bspTree.nodes[19] );
+
+   // 9
+   Map_LoadBspNode( &map->bspTree.nodes[19], True, 0, &map->subsectors[8], &map->bspTree.nodes[18], 0, 0 );
+
+   // 10
+   Map_LoadBspNode( &map->bspTree.nodes[20], True, 0, &map->subsectors[9], &map->bspTree.nodes[18], 0, 0 );
+
+   // A1
+   Map_LoadBspNode( &map->bspTree.nodes[21], False, &map->sectors[1].linedefs[0], 0, &map->bspTree.nodes[17], &map->bspTree.nodes[23], &map->bspTree.nodes[22] );
+
+   // 11
+   Map_LoadBspNode( &map->bspTree.nodes[22], True, 0, &map->subsectors[10], &map->bspTree.nodes[21], 0, 0 );
+
+   // 12
+   Map_LoadBspNode( &map->bspTree.nodes[23], True, 0, &map->subsectors[11], &map->bspTree.nodes[21], 0, 0 );
+
+   // C4
+   Map_LoadBspNode( &map->bspTree.nodes[24], False, &map->sectors[4].linedefs[2], 0, &map->bspTree.nodes[0], &map->bspTree.nodes[40], &map->bspTree.nodes[25] );
+
+   // G5
+   Map_LoadBspNode( &map->bspTree.nodes[25], False, &map->sectors[5].linedefs[6], 0, &map->bspTree.nodes[24], &map->bspTree.nodes[29], &map->bspTree.nodes[26] );
+
+   // D0
+   Map_LoadBspNode( &map->bspTree.nodes[26], False, &map->sectors[0].linedefs[3], 0, &map->bspTree.nodes[25], &map->bspTree.nodes[28], &map->bspTree.nodes[27] );
+
+   // 13
+   Map_LoadBspNode( &map->bspTree.nodes[27], True, 0, &map->subsectors[12], &map->bspTree.nodes[26], 0, 0 );
+
+   // 14
+   Map_LoadBspNode( &map->bspTree.nodes[28], True, 0, &map->subsectors[13], &map->bspTree.nodes[26], 0, 0 );
+
+   // H5
+   Map_LoadBspNode( &map->bspTree.nodes[29], False, &map->sectors[5].linedefs[7], 0, &map->bspTree.nodes[25], &map->bspTree.nodes[31], &map->bspTree.nodes[30] );
+
+   // 15
+   Map_LoadBspNode( &map->bspTree.nodes[30], True, 0, &map->subsectors[14], &map->bspTree.nodes[29], 0, 0 );
+
+   // A5
+   Map_LoadBspNode( &map->bspTree.nodes[31], False, &map->sectors[5].linedefs[0], 0, &map->bspTree.nodes[29], &map->bspTree.nodes[33], &map->bspTree.nodes[32] );
+
+   // 16
+   Map_LoadBspNode( &map->bspTree.nodes[32], True, 0, &map->subsectors[15], &map->bspTree.nodes[31], 0, 0 );
+
+   // B5
+   Map_LoadBspNode( &map->bspTree.nodes[33], False, &map->sectors[5].linedefs[1], 0, &map->bspTree.nodes[31], &map->bspTree.nodes[35], &map->bspTree.nodes[34] );
+
+   // 17
+   Map_LoadBspNode( &map->bspTree.nodes[34], True, 0, &map->subsectors[16], &map->bspTree.nodes[33], 0, 0 );
+
+   // D5
+   Map_LoadBspNode( &map->bspTree.nodes[35], False, &map->sectors[5].linedefs[3], 0, &map->bspTree.nodes[33], &map->bspTree.nodes[37], &map->bspTree.nodes[36] );
+
+   // 18
+   Map_LoadBspNode( &map->bspTree.nodes[36], True, 0, &map->subsectors[17], &map->bspTree.nodes[35], 0, 0 );
+
+   // E5
+   Map_LoadBspNode( &map->bspTree.nodes[37], False, &map->sectors[5].linedefs[4], 0, &map->bspTree.nodes[35], &map->bspTree.nodes[39], &map->bspTree.nodes[38] );
+
+   // 19
+   Map_LoadBspNode( &map->bspTree.nodes[38], True, 0, &map->subsectors[18], &map->bspTree.nodes[37], 0, 0 );
+
+   // 20
+   Map_LoadBspNode( &map->bspTree.nodes[39], True, 0, &map->subsectors[19], &map->bspTree.nodes[37], 0, 0 );
+
+   // D2
+   Map_LoadBspNode( &map->bspTree.nodes[40], False, &map->sectors[2].linedefs[3], 0, &map->bspTree.nodes[24], &map->bspTree.nodes[50], &map->bspTree.nodes[41] );
+
+   // C3
+   Map_LoadBspNode( &map->bspTree.nodes[41], False, &map->sectors[3].linedefs[2], 0, &map->bspTree.nodes[40], &map->bspTree.nodes[45], &map->bspTree.nodes[42] );
+
+   // C0
+   Map_LoadBspNode( &map->bspTree.nodes[42], False, &map->sectors[0].linedefs[2], 0, &map->bspTree.nodes[41], &map->bspTree.nodes[44], &map->bspTree.nodes[43] );
+
+   // 21
+   Map_LoadBspNode( &map->bspTree.nodes[43], True, 0, &map->subsectors[20], &map->bspTree.nodes[42], 0, 0 );
+
+   // 22
+   Map_LoadBspNode( &map->bspTree.nodes[44], True, 0, &map->subsectors[21], &map->bspTree.nodes[42], 0, 0 );
+
+   // B3
+   Map_LoadBspNode( &map->bspTree.nodes[45], False, &map->sectors[3].linedefs[1], 0, &map->bspTree.nodes[41], &map->bspTree.nodes[47], &map->bspTree.nodes[46] );
+
+   // 23
+   Map_LoadBspNode( &map->bspTree.nodes[46], True, 0, &map->subsectors[22], &map->bspTree.nodes[45], 0, 0 );
+
+   // A3
+   Map_LoadBspNode( &map->bspTree.nodes[47], False, &map->sectors[3].linedefs[0], 0, &map->bspTree.nodes[45], &map->bspTree.nodes[49], &map->bspTree.nodes[48] );
+
+   // 24
+   Map_LoadBspNode( &map->bspTree.nodes[48], True, 0, &map->subsectors[23], &map->bspTree.nodes[47], 0, 0 );
+
+   // 25
+   Map_LoadBspNode( &map->bspTree.nodes[49], True, 0, &map->subsectors[24], &map->bspTree.nodes[47], 0, 0 );
+
+   // C2
+   Map_LoadBspNode( &map->bspTree.nodes[50], False, &map->sectors[2].linedefs[2], 0, &map->bspTree.nodes[40], &map->bspTree.nodes[56], &map->bspTree.nodes[51] );
+
+   // E4
+   Map_LoadBspNode( &map->bspTree.nodes[51], False, &map->sectors[4].linedefs[4], 0, &map->bspTree.nodes[50], &map->bspTree.nodes[53], &map->bspTree.nodes[52] );
+
+   // 26
+   Map_LoadBspNode( &map->bspTree.nodes[52], True, 0, &map->subsectors[25], &map->bspTree.nodes[51], 0, 0 );
+
+   // B4
+   Map_LoadBspNode( &map->bspTree.nodes[53], False, &map->sectors[4].linedefs[1], 0, &map->bspTree.nodes[51], &map->bspTree.nodes[55], &map->bspTree.nodes[54] );
+
+   // 27
+   Map_LoadBspNode( &map->bspTree.nodes[54], True, 0, &map->subsectors[26], &map->bspTree.nodes[53], 0, 0 );
+
+   // 28
+   Map_LoadBspNode( &map->bspTree.nodes[55], True, 0, &map->subsectors[27], &map->bspTree.nodes[53], 0, 0 );
+
+   // B2
+   Map_LoadBspNode( &map->bspTree.nodes[56], False, &map->sectors[2].linedefs[1], 0, &map->bspTree.nodes[50], &map->bspTree.nodes[58], &map->bspTree.nodes[57] );
+
+   // 29
+   Map_LoadBspNode( &map->bspTree.nodes[57], True, 0, &map->subsectors[28], &map->bspTree.nodes[56], 0, 0 );
+
+   // 30
+   Map_LoadBspNode( &map->bspTree.nodes[58], True, 0, &map->subsectors[29], &map->bspTree.nodes[56], 0, 0 );
 }
 
 internal void Map_LoadLinedef( Linedef_t* linedef, r32 startX, r32 startY, r32 endX, r32 endY, u16 color )
@@ -218,4 +400,14 @@ internal void Map_LoadLineseg( Lineseg_t* lineseg, Linedef_t* linedef, r32 start
    lineseg->start.y = startY;
    lineseg->end.x = endX;
    lineseg->end.y = endY;
+}
+
+internal void Map_LoadBspNode( BspNode_t* node, Bool_t isLeaf, Linedef_t* linedef, Subsector_t* subsector, BspNode_t* parent, BspNode_t* leftChild, BspNode_t* rightChild )
+{
+   node->isLeaf = isLeaf;
+   node->linedef = linedef;
+   node->subsector = subsector;
+   node->parent = parent;
+   node->leftChild = leftChild;
+   node->rightChild = rightChild;
 }
