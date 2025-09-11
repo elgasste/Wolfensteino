@@ -4,11 +4,13 @@
 #include "common.h"
 #include "clock.h"
 #include "screen.h"
+#include "input.h"
 
 typedef struct Wolfenstein_t
 {
    Clock_t clock;
    Screen_t screen;
+   Input_t input;
 }
 Wolfenstein_t;
 

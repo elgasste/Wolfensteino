@@ -2,7 +2,10 @@
 #include "screen.h"
 
 internal LRESULT CALLBACK MainWindowProc( _In_ HWND hWnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam );
+internal void InitButtonMap();
 internal void RenderScreen();
+internal void DrawDiagnostics( HDC* dcMem );
+internal void HandleKeyboardInput( u32 keyCode, LPARAM flags );
 internal void FatalError( const char* message );
 
 int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow )
@@ -88,12 +91,17 @@ int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    g_winGlobals.bmpInfo.bmiHeader.biBitCount = 32;
    g_winGlobals.bmpInfo.bmiHeader.biCompression = BI_RGB;
 
+   InitButtonMap();
+
    Wolfenstein_Init( wolf, g_winGlobals.screenBuffer.memory16 );
    g_winGlobals.shutdown = False;
+
+   g_winDebugFlags.showDiagnostics = False;
 
    while ( 1 )
    {
       Clock_StartFrame( &wolf->clock );
+      Input_ResetState( &wolf->input );
 
       while ( PeekMessageA( &msg, g_winGlobals.hWndMain, 0, 0, PM_REMOVE ) )
       {
@@ -132,6 +140,12 @@ internal LRESULT CALLBACK MainWindowProc( _In_ HWND hWnd, _In_ UINT uMsg, _In_ W
       case WM_DESTROY:
          g_winGlobals.shutdown = True;
          break;
+      case WM_KEYDOWN:
+      case WM_KEYUP:
+      case WM_SYSKEYDOWN:
+      case WM_SYSKEYUP:
+         HandleKeyboardInput( (u32)wParam, lParam );
+         break;
       case WM_PAINT:
          RenderScreen();
          break;
@@ -140,6 +154,18 @@ internal LRESULT CALLBACK MainWindowProc( _In_ HWND hWnd, _In_ UINT uMsg, _In_ W
    }
 
    return result;
+}
+
+internal void InitButtonMap()
+{
+   g_winGlobals.buttonMap[Button_Left] = VK_LEFT;
+   g_winGlobals.buttonMap[Button_Up] = VK_UP;
+   g_winGlobals.buttonMap[Button_Right] = VK_RIGHT;
+   g_winGlobals.buttonMap[Button_Down] = VK_DOWN;
+   g_winGlobals.buttonMap[Button_A] = 0x58; // X
+   g_winGlobals.buttonMap[Button_B] = 0x5A; // Z
+   g_winGlobals.buttonMap[Button_Start] = VK_RETURN;
+   g_winGlobals.buttonMap[Button_Select] = VK_SHIFT;
 }
 
 // the double-buffering part of this came from Stack Overflow
@@ -169,6 +195,11 @@ internal void RenderScreen()
       DIB_RGB_COLORS, SRCCOPY
    );
 
+   if ( g_winDebugFlags.showDiagnostics )
+   {
+      DrawDiagnostics( &dcMem );
+   }
+
    // transfer the off-screen DC to the screen
    BitBlt( dc, 0, 0, winWidth, winHeight, dcMem, 0, 0, SRCCOPY );
 
@@ -176,6 +207,125 @@ internal void RenderScreen()
    DeleteObject( bmMem );
    DeleteDC( dcMem );
    EndPaint( g_winGlobals.hWndMain, &ps );
+}
+
+internal void DrawDiagnostics( HDC* dcMem )
+{
+   u32 gameSeconds, realSeconds;
+   RECT r = { 10, 10, 0, 0 };
+   char str[STRING_SIZE_DEFAULT];
+   HFONT oldFont = (HFONT)SelectObject( *dcMem, g_winGlobals.hFont );
+
+   SetTextColor( *dcMem, 0x00FFFFFF );
+   SetBkMode( *dcMem, TRANSPARENT );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "   Frame Rate: %u", CLOCK_FPS );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "Last Frame MS: %u", g_winGlobals.wolf.clock.lastFrameMicro / 1000 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, " Total Frames: %u", g_winGlobals.wolf.clock.frameCount );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   gameSeconds = g_winGlobals.wolf.clock.frameCount / CLOCK_FPS;
+   sprintf_s( str, STRING_SIZE_DEFAULT, " In-Game Time: %u:%02u:%02u", gameSeconds / 3600, gameSeconds / 60, gameSeconds );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   realSeconds = ( g_winGlobals.wolf.clock.absoluteEndMicro - g_winGlobals.wolf.clock.absoluteStartMicro ) / 1000000;
+   sprintf_s( str, STRING_SIZE_DEFAULT, "    Real Time: %u:%02u:%02u", realSeconds / 3600, realSeconds / 60, realSeconds );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "  |" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Up].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "--" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Left].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "   --" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Right].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "      SEL" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Select].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "          STR" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Start].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "              B" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_B].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "                A" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_A].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   sprintf_s( str, STRING_SIZE_DEFAULT, "  |" );
+   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Down].down ? 0x00FFFFFF : 0x00333333 );
+   DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
+   r.top += 16;
+
+   SelectObject( *dcMem, oldFont );
+}
+
+internal void HandleKeyboardInput( u32 keyCode, LPARAM flags )
+{
+   Bool_t keyWasDown = ( flags & ( (LONG_PTR)1 << 30 ) ) != 0 ? True : False;
+   Bool_t keyIsDown = ( flags & ( (LONG_PTR)1 << 31 ) ) == 0 ? True : False;
+   u32 i;
+
+   // ignore repeat presses
+   if ( keyWasDown != keyIsDown )
+   {
+      if ( keyIsDown )
+      {
+         // ensure alt+F4 still closes the window
+         if ( keyCode == VK_F4 && ( flags & ( (LONG_PTR)1 << 29 ) ) )
+         {
+            g_winGlobals.shutdown = True;
+            return;
+         }
+
+         for ( i = 0; i < (u32)Button_Count; i++ )
+         {
+            if ( g_winGlobals.buttonMap[i] == keyCode )
+            {
+               Input_ButtonPressed( &g_winGlobals.wolf.input, i );
+               break;
+            }
+         }
+
+         // Windows-specific diagnostic/debug keys
+         switch ( keyCode )
+         {
+            case VK_F8:
+               TOGGLE_BOOL( g_winDebugFlags.showDiagnostics );
+               break;
+         }
+      }
+      else
+      {
+         for ( i = 0; i < (u32)Button_Count; i++ )
+         {
+            if ( g_winGlobals.buttonMap[i] == keyCode )
+            {
+               Input_ButtonReleased( &g_winGlobals.wolf.input, i );
+               break;
+            }
+         }
+      }
+   }
 }
 
 internal void FatalError( const char* message )

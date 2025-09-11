@@ -52,6 +52,18 @@ typedef double r64;
 #define DELAY_MS( x )                  delay( x )
 #endif
 
+#if defined( VISUAL_STUDIO_DEV )
+
+typedef struct WinDebugFlags_t
+{
+   Bool_t showDiagnostics;
+}
+WinDebugFlags_t;
+
+WinDebugFlags_t g_winDebugFlags;
+
+#endif // VISUAL_STUDIO_DEV
+
 #if defined( __cplusplus )
 extern "C"
 {

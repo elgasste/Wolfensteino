@@ -135,15 +135,18 @@
   <ItemGroup>
     <ClInclude Include="..\..\Wolfensteino\clock.h" />
     <ClInclude Include="..\..\Wolfensteino\common.h" />
+    <ClInclude Include="..\..\Wolfensteino\input.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />
     <ClInclude Include="..\..\Wolfensteino\wolfenstein.h" />
     <ClInclude Include="win_common.h" />
     <ClInclude Include="win_pixel_buffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Wolfensteino\input.c" />
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
     <ClCompile Include="..\..\Wolfensteino\wolfenstein.c" />
     <ClCompile Include="win_clock.c" />
+    <ClCompile Include="win_input.c" />
     <ClCompile Include="win_main.c" />
     <ClCompile Include="win_pixel_buffer.c" />
     <ClCompile Include="win_screen.c" />

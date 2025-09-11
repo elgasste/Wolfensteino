@@ -19,6 +19,15 @@ void setup()
 
    g_gigaShield.begin();
    Wolfenstein_Init( &g_wolf, g_gigaShield.getBuffer() );
+
+   // for NES controller input
+   pinMode( INPUT_NES_DATA_PIN, INPUT );
+  
+   pinMode( INPUT_NES_CLOCK_PIN, OUTPUT );
+   pinMode( INPUT_NES_LATCH_PIN, OUTPUT );
+  
+   digitalWrite( INPUT_NES_CLOCK_PIN, LOW );
+   digitalWrite( INPUT_NES_LATCH_PIN, LOW );
 }
 
 void loop()

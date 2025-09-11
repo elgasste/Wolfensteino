@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include "common.h"
 #include "win_pixel_buffer.h"
 #include "wolfenstein.h"
 
@@ -24,6 +23,7 @@ typedef struct WinGlobalObjects_t
    LARGE_INTEGER performanceFrequency;
    BITMAPINFO bmpInfo;
    WinPixelBuffer_t screenBuffer;
+   u32 buttonMap[Button_Count];
    Wolfenstein_t wolf;
    Bool_t shutdown;
 }
