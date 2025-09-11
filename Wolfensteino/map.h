@@ -38,8 +38,8 @@ Sector_t;
 
 typedef struct Subsector_t
 {
-   Lineseg_t* linesegs[SUBSECTOR_MAX_LINESEGS];
-   u32 linedefCount;
+   Lineseg_t linesegs[SUBSECTOR_MAX_LINESEGS];
+   u32 linesegCount;
 }
 Subsector_t;
 
@@ -73,5 +73,16 @@ typedef struct Map_t
    BspTree_t bspTree;
 }
 Map_t;
+
+#if defined( __cplusplus )
+extern "C" {
+#endif
+
+// wolfenstein_data.c
+void Map_Load( Map_t* map );
+
+#if defined( __cplusplus )
+}
+#endif
 
 #endif // MAP_H

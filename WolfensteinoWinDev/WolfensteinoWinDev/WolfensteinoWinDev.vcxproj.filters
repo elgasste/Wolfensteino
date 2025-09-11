@@ -68,5 +68,8 @@
     <ClCompile Include="win_input.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Wolfensteino\wolfenstein_data.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
