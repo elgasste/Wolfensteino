@@ -136,7 +136,9 @@
     <ClInclude Include="..\..\Wolfensteino\clock.h" />
     <ClInclude Include="..\..\Wolfensteino\common.h" />
     <ClInclude Include="..\..\Wolfensteino\input.h" />
+    <ClInclude Include="..\..\Wolfensteino\map.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />
+    <ClInclude Include="..\..\Wolfensteino\vector.h" />
     <ClInclude Include="..\..\Wolfensteino\wolfenstein.h" />
     <ClInclude Include="win_common.h" />
     <ClInclude Include="win_pixel_buffer.h" />

@@ -5,12 +5,15 @@
 #include "clock.h"
 #include "screen.h"
 #include "input.h"
+#include "map.h"
 
 typedef struct Wolfenstein_t
 {
    Clock_t clock;
    Screen_t screen;
    Input_t input;
+
+   Map_t map;
 }
 Wolfenstein_t;
 
