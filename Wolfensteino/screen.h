@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#define SCREEN_WIDTH                   480
-#define SCREEN_HEIGHT                  270
-#define SCREEN_PIXELS                  129600
+#define SCREEN_WIDTH                   420
+#define SCREEN_HEIGHT                  240
+#define SCREEN_PIXELS                  100800
 
 #define COLOR_BLACK                    0x0000
 #define COLOR_WHITE                    0xFFFF

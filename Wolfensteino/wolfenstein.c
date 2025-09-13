@@ -27,8 +27,12 @@ void Wolfenstein_Init( Wolfenstein_t* wolf, u16* screenBuffer )
 
 void Wolfenstein_Tic( Wolfenstein_t* wolf )
 {
-   Input_Read( &wolf->input );
-   Wolfenstein_HandleInput( wolf );
+   /*Input_Read( &wolf->input );
+   Wolfenstein_HandleInput( wolf );*/
+
+   // MUFFINS: for testing
+   Player_TurnRight( &wolf->player );
+
    Wolfenstein_Draw( wolf );
 }
 
@@ -54,10 +58,11 @@ internal void Wolfenstein_Draw( Wolfenstein_t* wolf )
 internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
 {
    u32 i, columnIndex, y, length;
+   u16 color;
    Vector2r32 intersectionPoint;
    Linedef_t* intersectingLinedef = 0;
    r32 angle = wolf->player.angle + RAD_30;
-   r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom;
+   r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom, lightFactor, lightAdjustment, lightPercentage;
    local_persist r32 wallHeight = 100.0f;
    local_persist r32 projectionPlaneDelta = SCREEN_HEIGHT / 1.5f;
    local_persist r32 halfScreenHeight = SCREEN_HEIGHT / 2.0f;
@@ -91,12 +96,15 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          projectedWallHeight = ( ( wallHeight / rayLength ) * projectionPlaneDelta );
          halfProjectedWallHeight = projectedWallHeight / 2.0f;
 
-         // MUFFINS: re-visit light depth adjustment after testing performance on the Arduino
-         /*color = intersectingLinedef->color;
-         lightAdjustment = ( rayLength == 0.0f ) ? 0.0f : min( rayLength / lightingScalar, 255.0f );
-         color.r = (Uint8)max( 0, (int)( color.r - lightAdjustment ) );
-         color.g = (Uint8)max( 0, (int)( color.g - lightAdjustment ) );
-         color.b = (Uint8)max( 0, (int)( color.b - lightAdjustment ) );*/
+         lightFactor = rayLength / lightingScalar;
+         lightAdjustment = min( lightFactor, 255.0f );
+         lightPercentage = 1.0f - ( lightAdjustment / 255.0f );
+
+         // light diminishing
+         color = intersectingLinedef->color;
+         color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
+                 ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
+                 ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
 
          top = halfScreenHeight - halfProjectedWallHeight;
          bottom = halfScreenHeight + halfProjectedWallHeight;
@@ -113,7 +121,7 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          length = (u32)( bottom - top );
          y = (u32)( ( SCREEN_HEIGHT - length ) / 2 );
 
-         Screen_DrawVerticalLine( &wolf->screen, i, y, length, intersectingLinedef->color );
+         Screen_DrawVerticalLine( &wolf->screen, i, y, length, color );
       }
    }
 }
