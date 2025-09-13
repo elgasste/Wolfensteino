@@ -137,6 +137,8 @@
     <ClInclude Include="..\..\Wolfensteino\common.h" />
     <ClInclude Include="..\..\Wolfensteino\input.h" />
     <ClInclude Include="..\..\Wolfensteino\map.h" />
+    <ClInclude Include="..\..\Wolfensteino\map_geometry.h" />
+    <ClInclude Include="..\..\Wolfensteino\wolf_math.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />
     <ClInclude Include="..\..\Wolfensteino\vector.h" />
     <ClInclude Include="..\..\Wolfensteino\wolfenstein.h" />
@@ -145,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Wolfensteino\input.c" />
+    <ClCompile Include="..\..\Wolfensteino\wolf_math.c" />
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
     <ClCompile Include="..\..\Wolfensteino\wolfenstein.c" />
     <ClCompile Include="..\..\Wolfensteino\wolfenstein_data.c" />

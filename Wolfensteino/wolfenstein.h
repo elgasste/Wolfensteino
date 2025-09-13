@@ -14,6 +14,10 @@ typedef struct Wolfenstein_t
    Input_t input;
 
    Map_t map;
+   
+   Vector2r32 camPosition;
+   r32 camAngle;
+   r32 rayAngleIncrement;
 }
 Wolfenstein_t;
 
