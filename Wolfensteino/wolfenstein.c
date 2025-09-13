@@ -90,7 +90,7 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          //auto rayLength = (float)sqrt( pow( intersectionPoint.x - _playerPosition.x, 2 ) + pow( intersectionPoint.y - _playerPosition.y, 2 ) );
 
          // from the Wolfenstein 3D book. it's supposed to fix fish-eye, but sometimes it seems to cause reverse-fish-eye
-         rayLength = ( ( intersectionPoint.x - wolf->player.position.x ) * (r32)cos( wolf->player.angle ) ) - ( ( intersectionPoint.y - wolf->player.position.y ) * (r32)sin( wolf->player.angle ) );
+         rayLength = ( ( intersectionPoint.x - wolf->player.position.x ) * (r32)cosf( wolf->player.angle ) ) - ( ( intersectionPoint.y - wolf->player.position.y ) * (r32)sinf( wolf->player.angle ) );
 
          // this uses the formula ProjectedWallHeight = ( ActualWallHeight / DistanceToWall ) * DistanceToProjectionPlane
          projectedWallHeight = ( ( wallHeight / rayLength ) * projectionPlaneDelta );

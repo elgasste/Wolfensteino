@@ -1,17 +1,14 @@
 #include "wolf_math.h"
 #include "map_geometry.h"
 
-internal Bool_t Math_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32* intersect );
+#define CROSS_PRODUCT( px, py, ox, oy, dx, dy ) ( ( dx * ( py - oy ) ) - ( dy * ( px - ox ) ) )
 
-r32 Math_CrossProduct( Vector2r32* point, Vector2r32* origin, r32 dx, r32 dy )
-{
-   return ( ( dx * ( point->y - origin->y ) ) - ( dy * ( point->x - origin->x ) ) );
-}
+internal Bool_t Math_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32* intersect );
 
 Bool_t Math_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect )
 {
-   r32 dx = (r32)cos( angle ) * RAY_LENGTH;
-   r32 dy = (r32)tan( angle ) * dx;
+   r32 dx = (r32)cosf( angle ) * RAY_LENGTH;
+   r32 dy = (r32)tanf( angle ) * dx;
 
    return Math_LineIntersectsLineseg( lineseg, camPositionX, camPositionY, camPositionX + dx, camPositionY - dy, intersect );
 }
@@ -61,5 +58,5 @@ Bool_t Math_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef )
       return ( dx > 0 ) ? position->y > linedef->start.y : position->y <= linedef->start.y;
    }
 
-   return Math_CrossProduct( position, &linedef->start, dx, dy ) > 0;
+   return CROSS_PRODUCT( position->x, position->y, linedef->start.x, linedef->start.y, dx, dy ) > 0.0f;
 }

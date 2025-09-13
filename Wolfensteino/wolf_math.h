@@ -22,7 +22,6 @@ typedef struct Lineseg_t Lineseg_t;
 extern "C" {
 #endif
 
-r32 Math_CrossProduct(Vector2r32* point, Vector2r32* origin, r32 dx, r32 dy );
 Bool_t Math_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect );
 Bool_t Math_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef );
 
