@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "input.h"
 #include "map.h"
+#include "player.h"
 
 typedef struct Wolfenstein_t
 {
@@ -14,9 +15,8 @@ typedef struct Wolfenstein_t
    Input_t input;
 
    Map_t map;
+   Player_t player;
    
-   Vector2r32 camPosition;
-   r32 camAngle;
    r32 rayAngleIncrement;
 }
 Wolfenstein_t;

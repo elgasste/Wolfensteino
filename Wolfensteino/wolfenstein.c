@@ -1,6 +1,7 @@
 #include "wolfenstein.h"
 #include "wolf_math.h"
 
+internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf );
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf );
 internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf );
 internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
@@ -17,17 +18,30 @@ void Wolfenstein_Init( Wolfenstein_t* wolf, u16* screenBuffer )
    Map_Load( &wolf->map );
 
    // sub-sector 1
-   wolf->camPosition.x = 30;
-   wolf->camPosition.y = 170;
-
-   wolf->camAngle = RAD_45;
+   wolf->player.position.x = 30;
+   wolf->player.position.y = 170;
+   wolf->player.angle = RAD_45;
+   
    wolf->rayAngleIncrement = ( RAD_30 * 2 ) / SCREEN_WIDTH;
 }
 
 void Wolfenstein_Tic( Wolfenstein_t* wolf )
 {
    Input_Read( &wolf->input );
+   Wolfenstein_HandleInput( wolf );
    Wolfenstein_Draw( wolf );
+}
+
+internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf )
+{
+   if ( wolf->input.buttonStates[Button_Left].down )
+   {
+      Player_TurnLeft( &wolf->player );
+   }
+   if ( wolf->input.buttonStates[Button_Right].down )
+   {
+      Player_TurnRight( &wolf->player );
+   }
 }
 
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf )
@@ -42,7 +56,7 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
    u32 i, columnIndex, y, length;
    Vector2r32 intersectionPoint;
    Linedef_t* intersectingLinedef = 0;
-   r32 angle = wolf->camAngle + RAD_30;
+   r32 angle = wolf->player.angle + RAD_30;
    r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom;
    local_persist r32 wallHeight = 100.0f;
    local_persist r32 projectionPlaneDelta = SCREEN_HEIGHT / 1.5f;
@@ -71,7 +85,7 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          //auto rayLength = (float)sqrt( pow( intersectionPoint.x - _playerPosition.x, 2 ) + pow( intersectionPoint.y - _playerPosition.y, 2 ) );
 
          // from the Wolfenstein 3D book. it's supposed to fix fish-eye, but sometimes it seems to cause reverse-fish-eye
-         rayLength = ( ( intersectionPoint.x - wolf->camPosition.x ) * (r32)cos( wolf->camAngle ) ) - ( ( intersectionPoint.y - wolf->camPosition.y ) * (r32)sin( wolf->camAngle ) );
+         rayLength = ( ( intersectionPoint.x - wolf->player.position.x ) * (r32)cos( wolf->player.angle ) ) - ( ( intersectionPoint.y - wolf->player.position.y ) * (r32)sin( wolf->player.angle ) );
 
          // this uses the formula ProjectedWallHeight = ( ActualWallHeight / DistanceToWall ) * DistanceToProjectionPlane
          projectedWallHeight = ( ( wallHeight / rayLength ) * projectionPlaneDelta );
@@ -116,7 +130,7 @@ internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
    {
       for ( i = 0; i < node->subsector->linesegCount; i++ )
       {
-         if ( Math_RayIntersectsLineseg( &node->subsector->linesegs[i], wolf->camPosition.x, wolf->camPosition.y, angle, intersectionPoint ) )
+         if ( Math_RayIntersectsLineseg( &node->subsector->linesegs[i], wolf->player.position.x, wolf->player.position.y, angle, intersectionPoint ) )
          {
             *intersectingLinedef = node->subsector->linesegs[i].linedef;
             return True;
@@ -129,7 +143,7 @@ internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
    {
       *intersectingLinedef = node->linedef;
 
-      if ( Math_IsPositionOnRightSide( &wolf->camPosition, node->linedef ) )
+      if ( Math_IsPositionOnRightSide( &wolf->player.position, node->linedef ) )
       {
          return Wolfenstein_CheckRayCollisionRecursive( wolf, node->rightChild, angle, intersectionPoint, intersectingLinedef )
             ? True

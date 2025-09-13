@@ -48,6 +48,9 @@
     <ClInclude Include="..\..\Wolfensteino\map_geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Wolfensteino\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.c">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Wolfensteino\wolf_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Wolfensteino\player.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
