@@ -47,6 +47,15 @@ internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf )
    {
       Player_TurnRight( &wolf->player );
    }
+
+   if ( wolf->input.buttonStates[Button_Up].down )
+   {
+      Player_MoveForward( &wolf->player );
+   }
+   if ( wolf->input.buttonStates[Button_Down].down )
+   {
+      Player_MoveBackward( &wolf->player );
+   }
 }
 
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf )
