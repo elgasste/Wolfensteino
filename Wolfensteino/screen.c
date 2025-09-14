@@ -24,7 +24,7 @@ void Screen_DrawVerticalLine( Screen_t* screen, u32 x, u32 y, u32 length, u16 co
 
    for ( i = 0; i < length; i++ )
    {
-      *bufferPos = color;
+      *bufferPos = ( i == 0 || i == ( length - 1 ) ) ? COLOR_BLACK : color;
       bufferPos += SCREEN_WIDTH;
    }
 }

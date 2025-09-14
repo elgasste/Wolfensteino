@@ -3,6 +3,7 @@
 
 internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf );
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf );
+internal void Wolfenstein_DrawBackdrop( Wolfenstein_t* wolf );
 internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf );
 internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
                                                         BspNode_t* node,
@@ -27,11 +28,11 @@ void Wolfenstein_Init( Wolfenstein_t* wolf, u16* screenBuffer )
 
 void Wolfenstein_Tic( Wolfenstein_t* wolf )
 {
-   /*Input_Read( &wolf->input );
-   Wolfenstein_HandleInput( wolf );*/
+   Input_Read( &wolf->input );
+   Wolfenstein_HandleInput( wolf );
 
    // MUFFINS: for testing
-   Player_TurnRight( &wolf->player );
+   //Player_TurnRight( &wolf->player );
 
    Wolfenstein_Draw( wolf );
 }
@@ -50,9 +51,38 @@ internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf )
 
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf )
 {
-   Screen_WipeColor( &wolf->screen, COLOR_BLACK );
+   Wolfenstein_DrawBackdrop( wolf );
    Wolfenstein_DrawMap( wolf );
    Screen_RenderBuffer( &wolf->screen );
+}
+
+internal void Wolfenstein_DrawBackdrop( Wolfenstein_t* wolf )
+{
+   u32 row, col;
+   r32 intensity;
+   local_persist r32 intensityIncrement = 1.0f / HALF_SCREEN_HEIGHT;
+
+   for ( row = 0, intensity = 1.0f; row < HALF_SCREEN_HEIGHT; row++, intensity -= intensityIncrement )
+   {
+      for ( col = 0; col < SCREEN_WIDTH; col++ )
+      {
+         wolf->screen.buffer[( row * SCREEN_WIDTH ) + col] =
+            ( (u16)( 0xF * intensity ) << 11 ) |
+            ( (u16)( 0x1F * intensity ) << 5 ) |
+            (u16)( 0xF * intensity );
+      }
+   }
+
+   for ( row = SCREEN_HEIGHT - 1, intensity = 1.0f; row >= HALF_SCREEN_HEIGHT; row--, intensity -= intensityIncrement )
+   {
+      for ( col = 0; col < SCREEN_WIDTH; col++ )
+      {
+         wolf->screen.buffer[( row * SCREEN_WIDTH ) + col] =
+            ( (u16)( 0xF * intensity ) << 11 ) |
+            ( (u16)( 0x1F * intensity ) << 5 ) |
+            (u16)( 0xF * intensity );
+      }
+   }
 }
 
 internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
@@ -65,8 +95,8 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
    r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom, lightFactor, lightAdjustment, lightPercentage;
    local_persist r32 wallHeight = 100.0f;
    local_persist r32 projectionPlaneDelta = SCREEN_HEIGHT / 1.5f;
-   local_persist r32 halfScreenHeight = SCREEN_HEIGHT / 2.0f;
    local_persist r32 lightingScalar = 2.0f;
+   local_persist Linedef_t* intersectingLinedefCache = 0;
 
    for ( i = 0; i < SCREEN_WIDTH; i++, angle -= wolf->rayAngleIncrement )
    {
@@ -83,7 +113,6 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
 
       if ( intersectingLinedef )
       {
-
          columnIndex = i * 2;
 
          // the old method. it causes fish-eye.
@@ -101,13 +130,21 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          lightPercentage = 1.0f - ( lightAdjustment / 255.0f );
 
          // light diminishing
-         color = intersectingLinedef->color;
-         color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
-                 ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
-                 ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
+         if ( intersectingLinedef == intersectingLinedefCache )
+         {
+            color = intersectingLinedef->color;
+            color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
+                    ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
+                    ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
+         }
+         else
+         {
+            color = COLOR_BLACK;
+            intersectingLinedefCache = intersectingLinedef;
+         }
 
-         top = halfScreenHeight - halfProjectedWallHeight;
-         bottom = halfScreenHeight + halfProjectedWallHeight;
+         top = HALF_SCREEN_HEIGHT - halfProjectedWallHeight;
+         bottom = HALF_SCREEN_HEIGHT + halfProjectedWallHeight;
 
          if ( top < 0.0f )
          {

@@ -5,6 +5,7 @@
 
 #define SCREEN_WIDTH                   420
 #define SCREEN_HEIGHT                  240
+#define HALF_SCREEN_HEIGHT             120
 #define SCREEN_PIXELS                  100800
 
 #define COLOR_BLACK                    0x0000
