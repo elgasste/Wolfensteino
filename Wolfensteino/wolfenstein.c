@@ -107,6 +107,7 @@ internal void Wolfenstein_DrawBackdrop( Wolfenstein_t* wolf )
 internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
 {
    u32 i, columnIndex, y, length;
+   u32 yCache = 0, lengthCache = 0;
    u16 color;
    Vector2r32 intersectionPoint;
    Linedef_t* intersectingLinedef = 0;
@@ -149,18 +150,10 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          lightPercentage = 1.0f - ( lightAdjustment / 255.0f );
 
          // light diminishing
-         if ( intersectingLinedef == intersectingLinedefCache )
-         {
-            color = intersectingLinedef->color;
-            color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
-                    ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
-                    ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
-         }
-         else
-         {
-            color = COLOR_BLACK;
-            intersectingLinedefCache = intersectingLinedef;
-         }
+         color = intersectingLinedef->color;
+         color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
+            ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
+            ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
 
          top = HALF_SCREEN_HEIGHT - halfProjectedWallHeight;
          bottom = HALF_SCREEN_HEIGHT + halfProjectedWallHeight;
@@ -177,7 +170,23 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          length = (u32)( bottom - top );
          y = (u32)( ( SCREEN_HEIGHT - length ) / 2 );
 
-         Screen_DrawVerticalLine( &wolf->screen, i, y, length, color );
+         if ( intersectingLinedef != intersectingLinedefCache )
+         {
+            intersectingLinedefCache = intersectingLinedef;
+            Screen_DrawVerticalLine( &wolf->screen, i, y, length, COLOR_BLACK );
+
+            if ( ( i > 0 ) && ( length < lengthCache ) )
+            {
+               Screen_DrawVerticalLine( &wolf->screen, i - 1, yCache, lengthCache, COLOR_BLACK );
+            }
+         }
+         else
+         {
+            Screen_DrawVerticalLine( &wolf->screen, i, y, length, color );
+         }
+
+         lengthCache = length;
+         yCache = y;
       }
    }
 }
