@@ -19,7 +19,9 @@ extern "C" {
 #endif
 
 void Player_TurnLeft( Player_t* player );
+void Player_StrafeLeft( Player_t* player );
 void Player_TurnRight( Player_t* player );
+void Player_StrafeRight( Player_t* player );
 void Player_MoveForward( Player_t* player );
 void Player_MoveBackward( Player_t* player );
 

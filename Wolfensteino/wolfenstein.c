@@ -30,10 +30,6 @@ void Wolfenstein_Tic( Wolfenstein_t* wolf )
 {
    Input_Read( &wolf->input );
    Wolfenstein_HandleInput( wolf );
-
-   // MUFFINS: for testing
-   //Player_TurnRight( &wolf->player );
-
    Wolfenstein_Draw( wolf );
 }
 
@@ -41,11 +37,25 @@ internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf )
 {
    if ( wolf->input.buttonStates[Button_Left].down )
    {
-      Player_TurnLeft( &wolf->player );
+      if ( wolf->input.buttonStates[Button_B].down )
+      {
+         Player_StrafeLeft( &wolf->player );
+      }
+      else
+      {
+         Player_TurnLeft( &wolf->player );
+      }
    }
    if ( wolf->input.buttonStates[Button_Right].down )
    {
-      Player_TurnRight( &wolf->player );
+      if ( wolf->input.buttonStates[Button_B].down )
+      {
+         Player_StrafeRight( &wolf->player );
+      }
+      else
+      {
+         Player_TurnRight( &wolf->player );
+      }
    }
 
    if ( wolf->input.buttonStates[Button_Up].down )
