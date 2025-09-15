@@ -5,12 +5,19 @@
 #include "clock.h"
 #include "screen.h"
 #include "input.h"
+#include "map.h"
+#include "player.h"
 
 typedef struct Wolfenstein_t
 {
    Clock_t clock;
    Screen_t screen;
    Input_t input;
+
+   Map_t map;
+   Player_t player;
+   
+   r32 rayAngleIncrement;
 }
 Wolfenstein_t;
 
