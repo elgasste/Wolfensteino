@@ -4,10 +4,7 @@
 #include "common.h"
 #include "map_geometry.h"
 
-#define MAP_MAX_LINEDEFS         1024
-#define MAP_MAX_SECTORS          32
-#define MAP_MAX_SUBSECTORS       128
-#define BSP_MAX_NODES            1024
+#define MAP_MEMORY_SIZE_BYTES    131072   // 128k
 
 typedef struct BspNode_t BspNode_t;
 
@@ -24,21 +21,16 @@ typedef struct BspNode_t
 }
 BspNode_t;
 
-typedef struct BspTree_t
-{
-   BspNode_t nodes[BSP_MAX_NODES];
-   u32 nodeCount;
-}
-BspTree_t;
-
 typedef struct Map_t
 {
-   Sector_t sectors[MAP_MAX_SECTORS];
-   u32 sectorCount;
-   Subsector_t subsectors[MAP_MAX_SUBSECTORS];
-   u32 subsectorCount;
+   u8 memory[MAP_MEMORY_SIZE_BYTES];
 
-   BspTree_t bspTree;
+   Sector_t* sectors;
+   u32 sectorCount;
+   Subsector_t* subsectors;
+   u32 subsectorCount;
+   BspNode_t* bspNodes;
+   u32 bspNodeCount;
 }
 Map_t;
 

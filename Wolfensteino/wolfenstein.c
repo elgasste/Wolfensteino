@@ -129,7 +129,7 @@ internal void Wolfenstein_DrawMap( Wolfenstein_t* wolf )
          angle = RAD_360 + angle;
       }
 
-      Wolfenstein_CheckRayCollisionRecursive( wolf, &wolf->map.bspTree.nodes[0], angle, &intersectionPoint, &intersectingLinedef );
+      Wolfenstein_CheckRayCollisionRecursive( wolf, &wolf->map.bspNodes[0], angle, &intersectionPoint, &intersectingLinedef );
 
       if ( intersectingLinedef )
       {
