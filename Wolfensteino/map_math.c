@@ -7,8 +7,8 @@ internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 
 
 Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect )
 {
-   r32 dx = (r32)cosf( angle ) * RAY_LENGTH;
-   r32 dy = (r32)tanf( angle ) * dx;
+   r32 dx = cosf( angle ) * RAY_LENGTH;
+   r32 dy = tanf( angle ) * dx;
 
    return MapMath_LineIntersectsLineseg( lineseg, camPositionX, camPositionY, camPositionX + dx, camPositionY - dy, intersect );
 }

@@ -4,15 +4,6 @@
 #include "common.h"
 #include "vector.h"
 
-#define PI           3.14159274f
-
-#define RAD_30       0.523598790f
-#define RAD_45       0.785398185f
-#define RAD_90       1.57079637f
-#define RAD_180      PI
-#define RAD_270      4.71238899f
-#define RAD_360      6.28318548f
-
 #define RAY_LENGTH   10000.0f;
 
 typedef struct Lineseg_t Lineseg_t;

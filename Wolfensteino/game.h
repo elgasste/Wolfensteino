@@ -16,8 +16,6 @@ typedef struct Game_t
 
    Map_t map;
    Player_t player;
-   
-   r32 rayAngleIncrement;
 }
 Game_t;
 

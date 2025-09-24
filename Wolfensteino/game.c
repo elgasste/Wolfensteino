@@ -22,8 +22,6 @@ void Game_Init( Game_t* game, u16* screenBuffer )
    game->player.position.x = 30;
    game->player.position.y = 170;
    game->player.angle = RAD_45;
-   
-   game->rayAngleIncrement = ( RAD_30 * 2 ) / SCREEN_WIDTH;
 }
 
 void Game_Tic( Game_t* game )
@@ -111,14 +109,11 @@ internal void Game_DrawMap( Game_t* game )
    u16 color;
    Vector2r32 intersectionPoint;
    Linedef_t* intersectingLinedef = 0;
-   r32 angle = game->player.angle + RAD_30;
    r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom, lightFactor, lightAdjustment, lightPercentage;
-   local_persist r32 wallHeight = 100.0f;
-   local_persist r32 projectionPlaneDelta = SCREEN_HEIGHT / 1.5f;
-   local_persist r32 lightingScalar = 2.0f;
-   local_persist Linedef_t* intersectingLinedefCache = 0;
+   r32 angle = game->player.angle + RAD_30;
+   Linedef_t* intersectingLinedefCache = 0;
 
-   for ( i = 0; i < SCREEN_WIDTH; i++, angle -= game->rayAngleIncrement )
+   for ( i = 0; i < SCREEN_WIDTH; i++, angle -= MAP_RAY_ANGLE_INCREMENT )
    {
       if ( angle >= RAD_360 )
       {
@@ -139,21 +134,21 @@ internal void Game_DrawMap( Game_t* game )
          //auto rayLength = (float)sqrt( pow( intersectionPoint.x - _playerPosition.x, 2 ) + pow( intersectionPoint.y - _playerPosition.y, 2 ) );
 
          // from the Wolfenstein 3D book. it's supposed to fix fish-eye, but sometimes it seems to cause reverse-fish-eye
-         rayLength = ( ( intersectionPoint.x - game->player.position.x ) * (r32)cosf( game->player.angle ) ) - ( ( intersectionPoint.y - game->player.position.y ) * (r32)sinf( game->player.angle ) );
+         rayLength = ( ( intersectionPoint.x - game->player.position.x ) * cosf( game->player.angle ) ) - ( ( intersectionPoint.y - game->player.position.y ) * sinf( game->player.angle ) );
 
          // this uses the formula ProjectedWallHeight = ( ActualWallHeight / DistanceToWall ) * DistanceToProjectionPlane
-         projectedWallHeight = ( ( wallHeight / rayLength ) * projectionPlaneDelta );
+         projectedWallHeight = ( ( MAP_WALL_HEIGHT / rayLength ) * MAP_PROJECTED_PLANE_DELTA );
          halfProjectedWallHeight = projectedWallHeight / 2.0f;
 
-         lightFactor = rayLength / lightingScalar;
+         lightFactor = rayLength / MAP_LIGHTING_SCALAR;
          lightAdjustment = min( lightFactor, 255.0f );
          lightPercentage = 1.0f - ( lightAdjustment / 255.0f );
 
          // light diminishing
          color = intersectingLinedef->color;
-         color = ( (u16)( (r32)( color >> 11 ) * lightPercentage ) << 11 ) |
-            ( (u16)( (r32)( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
-            ( (u16)( (r32)( color & 0x1F ) * lightPercentage ) );
+         color = ( (u16)( ( color >> 11 ) * lightPercentage ) << 11 ) |
+                 ( (u16)( ( ( color >> 5 ) & 0x3F ) * lightPercentage ) << 5 ) |
+                 ( (u16)( ( color & 0x1F ) * lightPercentage ) );
 
          top = HALF_SCREEN_HEIGHT - halfProjectedWallHeight;
          bottom = HALF_SCREEN_HEIGHT + halfProjectedWallHeight;
@@ -168,10 +163,14 @@ internal void Game_DrawMap( Game_t* game )
          }
 
          length = (u32)( bottom - top );
-         y = (u32)( ( SCREEN_HEIGHT - length ) / 2 );
+         y = ( SCREEN_HEIGHT - length ) / 2;
 
          if ( intersectingLinedef != intersectingLinedefCache )
          {
+            // TODO: revisit this later, the point is that we want to draw a border on
+            // the sides of the walls to differentiate them easier. this method is
+            // a little weird though, and not really correct.
+
             intersectingLinedefCache = intersectingLinedef;
             Screen_DrawVerticalLine( &game->screen, i, y, length, COLOR_BLACK );
 
@@ -182,7 +181,7 @@ internal void Game_DrawMap( Game_t* game )
          }
          else
          {
-            Screen_DrawVerticalLine( &game->screen, i, y, length, color );
+            Screen_DrawVerticalLineWithBorder( &game->screen, i, y, length, color, COLOR_BLACK );
          }
 
          lengthCache = length;

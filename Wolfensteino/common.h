@@ -34,6 +34,15 @@
 #define UNUSED_PARAM( x )              (void)x
 #define TOGGLE_BOOL( b )               b = b ? False : True;
 
+#define PI           3.14159274f
+
+#define RAD_30       0.523598790f
+#define RAD_45       0.785398185f
+#define RAD_90       1.57079637f
+#define RAD_180      PI
+#define RAD_270      4.71238899f
+#define RAD_360      6.28318548f
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
