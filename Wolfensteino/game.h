@@ -16,6 +16,8 @@ typedef struct Game_t
 
    Map_t map;
    Player_t player;
+
+   Bool_t mapOverheadView;
 }
 Game_t;
 

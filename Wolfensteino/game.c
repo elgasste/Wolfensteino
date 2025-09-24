@@ -4,7 +4,8 @@
 internal void Game_HandleInput( Game_t* game );
 internal void Game_Draw( Game_t* game );
 internal void Game_DrawBackdrop( Game_t* game );
-internal void Game_DrawMap( Game_t* game );
+internal void Game_DrawMap2d( Game_t* game );
+internal void Game_DrawMap3d( Game_t* game );
 internal Bool_t Game_CheckRayCollisionRecursive( Game_t* game,
                                                  BspNode_t* node,
                                                  r32 angle,
@@ -22,6 +23,8 @@ void Game_Init( Game_t* game, u16* screenBuffer )
    game->player.position.x = 30;
    game->player.position.y = 170;
    game->player.angle = RAD_45;
+
+   game->mapOverheadView = False;
 }
 
 void Game_Tic( Game_t* game )
@@ -64,12 +67,25 @@ internal void Game_HandleInput( Game_t* game )
    {
       Player_MoveBackward( &game->player );
    }
+
+   if ( game->input.buttonStates[Button_Select].pressed )
+   {
+      TOGGLE_BOOL( game->mapOverheadView );
+   }
 }
 
 internal void Game_Draw( Game_t* game )
 {
-   Game_DrawBackdrop( game );
-   Game_DrawMap( game );
+   if ( game->mapOverheadView )
+   {
+      Game_DrawMap2d( game );
+   }
+   else
+   {
+      Game_DrawBackdrop( game );
+      Game_DrawMap3d( game );
+   }
+   
    Screen_RenderBuffer( &game->screen );
 }
 
@@ -102,7 +118,12 @@ internal void Game_DrawBackdrop( Game_t* game )
    }
 }
 
-internal void Game_DrawMap( Game_t* game )
+internal void Game_DrawMap2d( Game_t* game )
+{
+   Screen_WipeColor( &game->screen, COLOR_BLACK );
+}
+
+internal void Game_DrawMap3d( Game_t* game )
 {
    u32 i, columnIndex, y, length;
    u32 yCache = 0, lengthCache = 0;
