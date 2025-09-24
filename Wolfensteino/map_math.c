@@ -1,5 +1,5 @@
 #include "map_math.h"
-#include "map_geometry.h"
+#include "map.h"
 
 #define CROSS_PRODUCT( px, py, ox, oy, dx, dy ) ( ( dx * ( py - oy ) ) - ( dy * ( px - ox ) ) )
 

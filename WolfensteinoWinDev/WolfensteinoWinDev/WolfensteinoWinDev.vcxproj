@@ -137,7 +137,6 @@
     <ClInclude Include="..\..\Wolfensteino\common.h" />
     <ClInclude Include="..\..\Wolfensteino\input.h" />
     <ClInclude Include="..\..\Wolfensteino\map.h" />
-    <ClInclude Include="..\..\Wolfensteino\map_geometry.h" />
     <ClInclude Include="..\..\Wolfensteino\player.h" />
     <ClInclude Include="..\..\Wolfensteino\map_math.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />

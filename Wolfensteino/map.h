@@ -2,11 +2,41 @@
 #define MAP_H
 
 #include "common.h"
-#include "map_geometry.h"
+#include "vector.h"
 
 #define MAP_MEMORY_SIZE_BYTES    131072   // 128k
 
 typedef struct BspNode_t BspNode_t;
+
+typedef struct Linedef_t
+{
+   Vector2r32 start;
+   Vector2r32 end;
+   u16 color;
+}
+Linedef_t;
+
+typedef struct Lineseg_t
+{
+   Linedef_t* linedef;
+   Vector2r32 start;
+   Vector2r32 end;
+}
+Lineseg_t;
+
+typedef struct Sector_t
+{
+   Linedef_t* linedefs;
+   u32 linedefCount;
+}
+Sector_t;
+
+typedef struct Subsector_t
+{
+   Lineseg_t* linesegs;
+   u32 linesegCount;
+}
+Subsector_t;
 
 typedef struct BspNode_t
 {

@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "vector.h"
-#include "map_geometry.h"
 
 #define PI           3.14159274f
 
@@ -17,6 +16,7 @@
 #define RAY_LENGTH   10000.0f;
 
 typedef struct Lineseg_t Lineseg_t;
+typedef struct Linedef_t Linedef_t;
 
 #if defined( __cplusplus )
 extern "C" {
