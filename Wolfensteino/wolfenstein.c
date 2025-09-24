@@ -1,5 +1,5 @@
 #include "wolfenstein.h"
-#include "wolf_math.h"
+#include "map_math.h"
 
 internal void Wolfenstein_HandleInput( Wolfenstein_t* wolf );
 internal void Wolfenstein_Draw( Wolfenstein_t* wolf );
@@ -203,7 +203,7 @@ internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
    {
       for ( i = 0; i < node->subsector->linesegCount; i++ )
       {
-         if ( Math_RayIntersectsLineseg( &node->subsector->linesegs[i], wolf->player.position.x, wolf->player.position.y, angle, intersectionPoint ) )
+         if ( MapMath_RayIntersectsLineseg( &node->subsector->linesegs[i], wolf->player.position.x, wolf->player.position.y, angle, intersectionPoint ) )
          {
             *intersectingLinedef = node->subsector->linesegs[i].linedef;
             return True;
@@ -216,7 +216,7 @@ internal Bool_t Wolfenstein_CheckRayCollisionRecursive( Wolfenstein_t* wolf,
    {
       *intersectingLinedef = node->linedef;
 
-      if ( Math_IsPositionOnRightSide( &wolf->player.position, node->linedef ) )
+      if ( MapMath_IsPositionOnRightSide( &wolf->player.position, node->linedef ) )
       {
          return Wolfenstein_CheckRayCollisionRecursive( wolf, node->rightChild, angle, intersectionPoint, intersectingLinedef )
             ? True

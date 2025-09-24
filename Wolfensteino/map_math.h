@@ -1,5 +1,5 @@
-#if !defined( WOLF_MATH_H )
-#define WOLF_MATH_H
+#if !defined( MAP_MATH_H )
+#define MAP_MATH_H
 
 #include "common.h"
 #include "vector.h"
@@ -22,11 +22,11 @@ typedef struct Lineseg_t Lineseg_t;
 extern "C" {
 #endif
 
-Bool_t Math_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect );
-Bool_t Math_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef );
+Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect );
+Bool_t MapMath_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif // WOLF_MATH_H
+#endif // MAP_MATH_H
