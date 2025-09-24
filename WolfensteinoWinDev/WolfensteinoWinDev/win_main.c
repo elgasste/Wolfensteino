@@ -17,7 +17,7 @@ int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    RECT expectedWindowRect = { 0 };
    LONG clientPaddingRight, clientPaddingTop;
    MSG msg;
-   Wolfenstein_t* wolf = &g_winGlobals.wolf;
+   Game_t* game = &g_winGlobals.game;
 
    UNUSED_PARAM( hPrevInstance );
    UNUSED_PARAM( lpCmdLine );
@@ -93,15 +93,15 @@ int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
    InitButtonMap();
 
-   Wolfenstein_Init( wolf, g_winGlobals.screenBuffer.memory16 );
+   Game_Init( game, g_winGlobals.screenBuffer.memory16 );
    g_winGlobals.shutdown = False;
 
    g_winDebugFlags.showDiagnostics = False;
 
    while ( 1 )
    {
-      Clock_StartFrame( &wolf->clock );
-      Input_ResetState( &wolf->input );
+      Clock_StartFrame( &( game->clock ) );
+      Input_ResetState( &( game->input ) );
 
       while ( PeekMessageA( &msg, g_winGlobals.hWndMain, 0, 0, PM_REMOVE ) )
       {
@@ -109,10 +109,10 @@ int CALLBACK WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
          DispatchMessageA( &msg );
       }
 
-      Wolfenstein_Tic( wolf );
+      Game_Tic( game );
 
       InvalidateRect( g_winGlobals.hWndMain, 0, FALSE );
-      Clock_EndFrame( &wolf->clock );
+      Clock_EndFrame( &game->clock );
 
       if ( g_winGlobals.shutdown )
       {
@@ -223,56 +223,56 @@ internal void DrawDiagnostics( HDC* dcMem )
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
-   sprintf_s( str, STRING_SIZE_DEFAULT, "Last Frame MS: %u", g_winGlobals.wolf.clock.lastFrameMicro / 1000 );
+   sprintf_s( str, STRING_SIZE_DEFAULT, "Last Frame MS: %u", g_winGlobals.game.clock.lastFrameMicro / 1000 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
-   sprintf_s( str, STRING_SIZE_DEFAULT, " Total Frames: %u", g_winGlobals.wolf.clock.frameCount );
+   sprintf_s( str, STRING_SIZE_DEFAULT, " Total Frames: %u", g_winGlobals.game.clock.frameCount );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
-   gameSeconds = g_winGlobals.wolf.clock.frameCount / CLOCK_FPS;
+   gameSeconds = g_winGlobals.game.clock.frameCount / CLOCK_FPS;
    sprintf_s( str, STRING_SIZE_DEFAULT, " In-Game Time: %u:%02u:%02u", gameSeconds / 3600, gameSeconds / 60, gameSeconds );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
-   realSeconds = ( g_winGlobals.wolf.clock.absoluteEndMicro - g_winGlobals.wolf.clock.absoluteStartMicro ) / 1000000;
+   realSeconds = ( g_winGlobals.game.clock.absoluteEndMicro - g_winGlobals.game.clock.absoluteStartMicro ) / 1000000;
    sprintf_s( str, STRING_SIZE_DEFAULT, "    Real Time: %u:%02u:%02u", realSeconds / 3600, realSeconds / 60, realSeconds );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "  |" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Up].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Up].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "--" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Left].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Left].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "   --" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Right].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Right].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "      SEL" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Select].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Select].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "          STR" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Start].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Start].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "              B" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_B].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_B].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "                A" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_A].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_A].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
    sprintf_s( str, STRING_SIZE_DEFAULT, "  |" );
-   SetTextColor( *dcMem, g_winGlobals.wolf.input.buttonStates[Button_Down].down ? 0x00FFFFFF : 0x00333333 );
+   SetTextColor( *dcMem, g_winGlobals.game.input.buttonStates[Button_Down].down ? 0x00FFFFFF : 0x00333333 );
    DrawTextA( *dcMem, str, -1, &r, DT_SINGLELINE | DT_NOCLIP );
    r.top += 16;
 
@@ -301,7 +301,7 @@ internal void HandleKeyboardInput( u32 keyCode, LPARAM flags )
          {
             if ( g_winGlobals.buttonMap[i] == keyCode )
             {
-               Input_ButtonPressed( &g_winGlobals.wolf.input, i );
+               Input_ButtonPressed( &g_winGlobals.game.input, i );
                break;
             }
          }
@@ -320,7 +320,7 @@ internal void HandleKeyboardInput( u32 keyCode, LPARAM flags )
          {
             if ( g_winGlobals.buttonMap[i] == keyCode )
             {
-               Input_ButtonReleased( &g_winGlobals.wolf.input, i );
+               Input_ButtonReleased( &g_winGlobals.game.input, i );
                break;
             }
          }

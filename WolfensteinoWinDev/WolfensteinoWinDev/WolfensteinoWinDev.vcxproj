@@ -141,16 +141,16 @@
     <ClInclude Include="..\..\Wolfensteino\map_math.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />
     <ClInclude Include="..\..\Wolfensteino\vector.h" />
-    <ClInclude Include="..\..\Wolfensteino\wolfenstein.h" />
+    <ClInclude Include="..\..\Wolfensteino\game.h" />
     <ClInclude Include="win_common.h" />
     <ClInclude Include="win_pixel_buffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Wolfensteino\game.c" />
     <ClCompile Include="..\..\Wolfensteino\input.c" />
     <ClCompile Include="..\..\Wolfensteino\player.c" />
     <ClCompile Include="..\..\Wolfensteino\map_math.c" />
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
-    <ClCompile Include="..\..\Wolfensteino\wolfenstein.c" />
     <ClCompile Include="..\..\Wolfensteino\wolfenstein_data.c" />
     <ClCompile Include="win_clock.c" />
     <ClCompile Include="win_input.c" />

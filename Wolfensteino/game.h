@@ -1,5 +1,5 @@
-#if !defined( WOLFENSTEIN_H )
-#define WOLFENSTEIN_H
+#if !defined( GAME_H )
+#define GAME_H
 
 #include "common.h"
 #include "clock.h"
@@ -8,7 +8,7 @@
 #include "map.h"
 #include "player.h"
 
-typedef struct Wolfenstein_t
+typedef struct Game_t
 {
    Clock_t clock;
    Screen_t screen;
@@ -19,17 +19,17 @@ typedef struct Wolfenstein_t
    
    r32 rayAngleIncrement;
 }
-Wolfenstein_t;
+Game_t;
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-void Wolfenstein_Init( Wolfenstein_t* wolf, u16* screenBuffer );
-void Wolfenstein_Tic( Wolfenstein_t* wolf );
+void Game_Init( Game_t* game, u16* screenBuffer );
+void Game_Tic( Game_t* game );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif // WOLFENSTEIN_H
+#endif // GAME_H

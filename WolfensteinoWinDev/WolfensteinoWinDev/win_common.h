@@ -14,7 +14,7 @@
 #include <malloc.h>
 
 #include "win_pixel_buffer.h"
-#include "wolfenstein.h"
+#include "game.h"
 
 typedef struct WinGlobalObjects_t
 {
@@ -24,7 +24,7 @@ typedef struct WinGlobalObjects_t
    BITMAPINFO bmpInfo;
    WinPixelBuffer_t screenBuffer;
    u32 buttonMap[Button_Count];
-   Wolfenstein_t wolf;
+   Game_t game;
    Bool_t shutdown;
 }
 WinGlobalObjects_t;
