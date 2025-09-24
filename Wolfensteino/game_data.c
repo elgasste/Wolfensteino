@@ -1,4 +1,4 @@
-#include "wolfenstein.h"
+#include "game.h"
 
 internal void Map_LoadLinedef( Linedef_t* linedef, r32 startX, r32 startY, r32 endX, r32 endY, u16 color );
 internal void Map_LoadLineseg( Lineseg_t* lineseg, Linedef_t* linedef, r32 startX, r32 startY, r32 endX, r32 endY );

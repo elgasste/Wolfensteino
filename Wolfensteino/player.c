@@ -1,5 +1,5 @@
 #include "player.h"
-#include "wolf_math.h"
+#include "map_math.h"
 
 void Player_TurnLeft( Player_t* player )
 {

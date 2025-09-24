@@ -2,11 +2,46 @@
 #define MAP_H
 
 #include "common.h"
-#include "map_geometry.h"
+#include "vector.h"
 
-#define MAP_MEMORY_SIZE_BYTES    131072   // 128k
+#define MAP_MEMORY_SIZE_BYTES       131072   // 128k
+
+#define MAP_WALL_HEIGHT             100.0f
+#define MAP_PROJECTED_PLANE_DELTA   ( SCREEN_HEIGHT / 1.5f )
+#define MAP_LIGHTING_SCALAR         2.0f
+#define MAP_RAY_ANGLE_INCREMENT     ( RAD_30 * 2 ) / SCREEN_WIDTH
 
 typedef struct BspNode_t BspNode_t;
+
+typedef struct Linedef_t
+{
+   Vector2r32 start;
+   Vector2r32 end;
+   u16 color;
+}
+Linedef_t;
+
+typedef struct Lineseg_t
+{
+   Linedef_t* linedef;
+   Vector2r32 start;
+   Vector2r32 end;
+}
+Lineseg_t;
+
+typedef struct Sector_t
+{
+   Linedef_t* linedefs;
+   u32 linedefCount;
+}
+Sector_t;
+
+typedef struct Subsector_t
+{
+   Lineseg_t* linesegs;
+   u32 linesegCount;
+}
+Subsector_t;
 
 typedef struct BspNode_t
 {
@@ -38,7 +73,7 @@ Map_t;
 extern "C" {
 #endif
 
-// wolfenstein_data.c
+// map_data.c
 void Map_Load( Map_t* map );
 
 #if defined( __cplusplus )
