@@ -151,7 +151,7 @@
     <ClCompile Include="..\..\Wolfensteino\player.c" />
     <ClCompile Include="..\..\Wolfensteino\map_math.c" />
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
-    <ClCompile Include="..\..\Wolfensteino\wolfenstein_data.c" />
+    <ClCompile Include="..\..\Wolfensteino\game_data.c" />
     <ClCompile Include="win_clock.c" />
     <ClCompile Include="win_input.c" />
     <ClCompile Include="win_main.c" />
