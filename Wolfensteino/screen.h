@@ -31,6 +31,7 @@ extern "C" {
    void Screen_WipeColor( Screen_t* screen, u16 color );
    void Screen_DrawVerticalLine( Screen_t* screen, u32 x, u32 y, u32 length, u16 color );
    void Screen_DrawVerticalLineWithBorder( Screen_t* screen, u32 x, u32 y, u32 length, u16 lineColor, u16 borderColor );
+   void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 color );
 
    // platform-specific
    void Screen_RenderBuffer( Screen_t* screen );
