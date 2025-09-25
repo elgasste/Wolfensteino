@@ -1,5 +1,7 @@
 #include "screen.h"
 
+#define PLOT_PIXEL( b, x, y, c ) b[( ( y ) * SCREEN_WIDTH ) + ( x )] = c
+
 void Screen_Init( Screen_t* screen, u16* buffer )
 {
    screen->buffer = buffer;
@@ -112,5 +114,45 @@ void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 colo
             prevY = y;
          }
       }
+   }
+}
+
+void Screen_DrawCircle( Screen_t* screen, u32 centerX, u32 centerY, u32 radius, u16 color )
+{
+   i32 x = 0, y = radius;
+   i32 p = 1 - radius;
+   u16* bufferPos = screen->buffer;
+
+   PLOT_PIXEL( bufferPos, centerX + x, centerY + y, color );
+   PLOT_PIXEL( bufferPos, centerX - x, centerY + y, color );
+   PLOT_PIXEL( bufferPos, centerX + x, centerY - y, color );
+   PLOT_PIXEL( bufferPos, centerX - x, centerY - y, color );
+   PLOT_PIXEL( bufferPos, centerX + y, centerY + x, color );
+   PLOT_PIXEL( bufferPos, centerX - y, centerY + x, color );
+   PLOT_PIXEL( bufferPos, centerX + y, centerY - x, color );
+   PLOT_PIXEL( bufferPos, centerX - y, centerY - x, color );
+
+   while ( x < y )
+   {
+      x++;
+
+      if ( p < 0 )
+      {
+         p = p + 2 * x + 1;
+      }
+      else
+      {
+         y--;
+         p = p + 2 * x + 1 - 2 * y;
+      }
+
+      PLOT_PIXEL( bufferPos, centerX + x, centerY + y, color );
+      PLOT_PIXEL( bufferPos, centerX - x, centerY + y, color );
+      PLOT_PIXEL( bufferPos, centerX + x, centerY - y, color );
+      PLOT_PIXEL( bufferPos, centerX - x, centerY - y, color );
+      PLOT_PIXEL( bufferPos, centerX + y, centerY + x, color );
+      PLOT_PIXEL( bufferPos, centerX - y, centerY + x, color );
+      PLOT_PIXEL( bufferPos, centerX + y, centerY - x, color );
+      PLOT_PIXEL( bufferPos, centerX - y, centerY - x, color );
    }
 }
