@@ -9,8 +9,9 @@
 
 typedef struct Player_t
 {
-   Vector2r32 position;
+   Vector2r32_t position;
    r32 angle;
+   r32 radius;
 }
 Player_t;
 

@@ -9,7 +9,7 @@ internal void Game_DrawMap3d( Game_t* game );
 internal Bool_t Game_CheckRayCollisionRecursive( Game_t* game,
                                                  BspNode_t* node,
                                                  r32 angle,
-                                                 Vector2r32* intersectionPoint,
+                                                 Vector2r32_t* intersectionPoint,
                                                  Linedef_t** intersectingLinedef );
 
 void Game_Init( Game_t* game, u16* screenBuffer )
@@ -23,8 +23,16 @@ void Game_Init( Game_t* game, u16* screenBuffer )
    game->player.position.x = 30;
    game->player.position.y = 170;
    game->player.angle = RAD_45;
+   game->player.radius = 10.0f;
 
-   game->mapOverheadView = False;
+   game->show2dMapView = True;
+
+   // center-screen
+   game->mapViewport2d.position.w = SCREEN_WIDTH;
+   game->mapViewport2d.position.h = SCREEN_HEIGHT;
+   game->mapViewport2d.position.x = ( SCREEN_WIDTH - game->mapViewport2d.position.w ) / 2;
+   game->mapViewport2d.position.y = ( SCREEN_HEIGHT - game->mapViewport2d.position.h ) / 2;
+   game->mapViewport2d.zoom = 1.0f;
 }
 
 void Game_Tic( Game_t* game )
@@ -70,13 +78,13 @@ internal void Game_HandleInput( Game_t* game )
 
    if ( game->input.buttonStates[Button_Select].pressed )
    {
-      TOGGLE_BOOL( game->mapOverheadView );
+      TOGGLE_BOOL( game->show2dMapView );
    }
 }
 
 internal void Game_Draw( Game_t* game )
 {
-   if ( game->mapOverheadView )
+   if ( game->show2dMapView )
    {
       Game_DrawMap2d( game );
    }
@@ -120,7 +128,40 @@ internal void Game_DrawBackdrop( Game_t* game )
 
 internal void Game_DrawMap2d( Game_t* game )
 {
+   u32 s, l, centerX, centerY;
+   r32 opposite, adjacent, cX, cY;
+   Linedef_t* linedef;
+   MapViewport_t* viewport = &game->mapViewport2d;
+
    Screen_WipeColor( &game->screen, COLOR_BLACK );
+
+   // MUFFINS: now we have the drawing functions, next up:
+   //
+   // - go through all linedefs and see if they intersect the viewport
+   //    - if they do, find their intersection points and draw lines in those locations
+
+   // linedefs
+   for ( s = 0; s < game->map.sectorCount; s++ )
+   {
+      for ( l = 0; l < game->map.sectors[s].linedefCount; l++ )
+      {
+         linedef = game->map.sectors[s].linedefs + l;
+
+         // MUFFINS: check if this intersects the viewport, and if they do, find their
+         // intersection points and draw lines at those exact spots
+      }
+   }
+
+   // the player
+   centerX = ( viewport->position.w / 2 ) + viewport->position.x;
+   centerY = ( viewport->position.h / 2 ) + viewport->position.y;
+   Screen_DrawCircle( &game->screen, centerX, centerY, (u32)( game->player.radius * viewport->zoom ), COLOR_GREEN );
+
+   opposite = sinf( game->player.angle ) * ( game->player.radius * viewport->zoom );
+   adjacent = opposite / tanf( game->player.angle );
+   cX = centerX + adjacent;
+   cY = centerY - opposite; // we use top-down coordinates
+   Screen_DrawLine( &game->screen, centerX, centerY, (u32)cX, (u32)cY, COLOR_GREEN );
 }
 
 internal void Game_DrawMap3d( Game_t* game )
@@ -128,7 +169,7 @@ internal void Game_DrawMap3d( Game_t* game )
    u32 i, columnIndex, y, length;
    u32 yCache = 0, lengthCache = 0;
    u16 color;
-   Vector2r32 intersectionPoint;
+   Vector2r32_t intersectionPoint;
    Linedef_t* intersectingLinedef = 0;
    r32 rayLength, projectedWallHeight, halfProjectedWallHeight, top, bottom, lightFactor, lightAdjustment, lightPercentage;
    r32 angle = game->player.angle + RAD_30;
@@ -214,7 +255,7 @@ internal void Game_DrawMap3d( Game_t* game )
 internal Bool_t Game_CheckRayCollisionRecursive( Game_t* game,
                                                  BspNode_t* node,
                                                  r32 angle,
-                                                 Vector2r32* intersectionPoint,
+                                                 Vector2r32_t* intersectionPoint,
                                                  Linedef_t** intersectingLinedef )
 {
    u32 i;

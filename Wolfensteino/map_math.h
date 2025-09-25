@@ -13,8 +13,8 @@ typedef struct Linedef_t Linedef_t;
 extern "C" {
 #endif
 
-Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect );
-Bool_t MapMath_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef );
+Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32_t* intersect );
+Bool_t MapMath_IsPositionOnRightSide( Vector2r32_t* position, Linedef_t* linedef );
 
 #if defined( __cplusplus )
 }

@@ -8,6 +8,13 @@
 #include "map.h"
 #include "player.h"
 
+typedef struct MapViewport_t
+{
+   Vector4u32_t position;
+   r32 zoom;
+}
+MapViewport_t;
+
 typedef struct Game_t
 {
    Clock_t clock;
@@ -17,7 +24,8 @@ typedef struct Game_t
    Map_t map;
    Player_t player;
 
-   Bool_t mapOverheadView;
+   Bool_t show2dMapView;
+   MapViewport_t mapViewport2d;
 }
 Game_t;
 

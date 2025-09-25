@@ -3,9 +3,9 @@
 
 #define CROSS_PRODUCT( px, py, ox, oy, dx, dy ) ( ( dx * ( py - oy ) ) - ( dy * ( px - ox ) ) )
 
-internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32* intersect );
+internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32_t* intersect );
 
-Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32* intersect )
+Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 camPositionY, r32 angle, Vector2r32_t* intersect )
 {
    r32 dx = cosf( angle ) * RAY_LENGTH;
    r32 dy = tanf( angle ) * dx;
@@ -13,7 +13,7 @@ Bool_t MapMath_RayIntersectsLineseg( Lineseg_t* lineseg, r32 camPositionX, r32 c
    return MapMath_LineIntersectsLineseg( lineseg, camPositionX, camPositionY, camPositionX + dx, camPositionY - dy, intersect );
 }
 
-internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32* intersect )
+internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 p1y, r32 p2x, r32 p2y, Vector2r32_t* intersect )
 {
    r32 pdx = p2x - p1x;
    r32 pdy = p2y - p1y;
@@ -41,7 +41,7 @@ internal Bool_t MapMath_LineIntersectsLineseg( Lineseg_t* lineseg, r32 p1x, r32 
    return False;
 }
 
-Bool_t MapMath_IsPositionOnRightSide( Vector2r32* position, Linedef_t* linedef )
+Bool_t MapMath_IsPositionOnRightSide( Vector2r32_t* position, Linedef_t* linedef )
 {
    r32 dx = linedef->end.x - linedef->start.x;
    r32 dy = linedef->end.y - linedef->start.y;

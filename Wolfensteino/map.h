@@ -15,8 +15,8 @@ typedef struct BspNode_t BspNode_t;
 
 typedef struct Linedef_t
 {
-   Vector2r32 start;
-   Vector2r32 end;
+   Vector2r32_t start;
+   Vector2r32_t end;
    u16 color;
 }
 Linedef_t;
@@ -24,8 +24,8 @@ Linedef_t;
 typedef struct Lineseg_t
 {
    Linedef_t* linedef;
-   Vector2r32 start;
-   Vector2r32 end;
+   Vector2r32_t start;
+   Vector2r32_t end;
 }
 Lineseg_t;
 
