@@ -19,6 +19,16 @@ void Screen_WipeColor( Screen_t* screen, u16 color )
    }
 }
 
+void Screen_DrawHorizontalLine( Screen_t* screen, u32 x, u32 y, u32 length, u16 color )
+{
+   u16* bufferPos = screen->buffer + ( ( y * SCREEN_WIDTH ) + x );
+
+   for (; x < length; x++, bufferPos++ )
+   {
+      *bufferPos = color;
+   }
+}
+
 void Screen_DrawVerticalLine( Screen_t* screen, u32 x, u32 y, u32 length, u16 color )
 {
    u32 i;
@@ -43,9 +53,9 @@ void Screen_DrawVerticalLineWithBorder( Screen_t* screen, u32 x, u32 y, u32 leng
 
 void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 color )
 {
-   u32 x, y, prevY, w;
+   u32 x, y, prevY;
    r32 adjacent, opposite, theta, tanTheta;
-   u16* bufferPos;
+   u16* buffer = screen->buffer;
    Bool_t flipY = False;
 
    if ( x1 == x2 )
@@ -54,14 +64,7 @@ void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 colo
    }
    else if ( y1 == y2 )
    {
-      x = ( x1 < x2 ) ? x1 : x2;
-      w = (u32)abs( (i32)x2 - (i32)x1 );
-      bufferPos = screen->buffer + ( ( y1 * SCREEN_WIDTH ) + x );
-
-      for (; x < w; x++, bufferPos++ )
-      {
-         *bufferPos = color;
-      }
+      Screen_DrawHorizontalLine( screen, ( x1 < x2 ) ? x1 : x2, y1, (u32)abs( (i32)x2 - (i32)x1 ), color );
    }
    else
    {
@@ -79,7 +82,6 @@ void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 colo
 
       theta = atanf( opposite / adjacent );
       tanTheta = tanf( theta );
-      bufferPos = screen->buffer;
       prevY = y1;
 
       if ( flipY )
@@ -87,12 +89,12 @@ void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 colo
          for ( x = x1; x <= x2; x++ )
          {
             y = y1 - (u32)( ( x - x1 ) * tanTheta );
-            bufferPos[( y * SCREEN_WIDTH ) + x] = color;
+            PLOT_PIXEL( buffer, x, y, color );
 
             while ( ( prevY - y ) > 1 )
             {
                prevY--;
-               bufferPos[( prevY * SCREEN_WIDTH ) + ( x - 1 )] = color;
+               PLOT_PIXEL( buffer, x - 1, prevY, color );
             }
 
             prevY = y;
@@ -103,12 +105,12 @@ void Screen_DrawLine( Screen_t* screen, u32 x1, u32 y1, u32 x2, u32 y2, u16 colo
          for ( x = x1; x <= x2; x++ )
          {
             y = y1 + (u32)( ( x - x1 ) * tanTheta );
-            bufferPos[( y * SCREEN_WIDTH ) + x] = color;
+            PLOT_PIXEL( buffer, x, y, color );
 
             while ( ( y - prevY ) > 1 )
             {
                prevY++;
-               bufferPos[( prevY * SCREEN_WIDTH ) + ( x - 1 )] = color;
+               PLOT_PIXEL( buffer, x - 1, prevY, color );
             }
 
             prevY = y;
