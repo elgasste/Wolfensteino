@@ -1,5 +1,5 @@
 #include "player.h"
-#include "map_math.h"
+#include "maths.h"
 
 void Player_TurnLeft( Player_t* player )
 {

@@ -1,5 +1,5 @@
 #include "game.h"
-#include "map_math.h"
+#include "maths.h"
 
 internal void Game_HandleInput( Game_t* game );
 internal void Game_Draw( Game_t* game );
@@ -135,11 +135,6 @@ internal void Game_DrawMap2d( Game_t* game )
 
    Screen_WipeColor( &game->screen, COLOR_BLACK );
 
-   // MUFFINS: now we have the drawing functions, next up:
-   //
-   // - go through all linedefs and see if they intersect the viewport
-   //    - if they do, find their intersection points and draw lines in those locations
-
    // linedefs
    for ( s = 0; s < game->map.sectorCount; s++ )
    {
@@ -264,7 +259,7 @@ internal Bool_t Game_CheckRayCollisionRecursive( Game_t* game,
    {
       for ( i = 0; i < node->subsector->linesegCount; i++ )
       {
-         if ( MapMath_RayIntersectsLineseg( &node->subsector->linesegs[i], game->player.position.x, game->player.position.y, angle, intersectionPoint ) )
+         if ( Maths_RayIntersectsLineseg( &node->subsector->linesegs[i], game->player.position.x, game->player.position.y, angle, intersectionPoint ) )
          {
             *intersectingLinedef = node->subsector->linesegs[i].linedef;
             return True;
@@ -277,7 +272,7 @@ internal Bool_t Game_CheckRayCollisionRecursive( Game_t* game,
    {
       *intersectingLinedef = node->linedef;
 
-      if ( MapMath_IsPositionOnRightSide( &game->player.position, node->linedef ) )
+      if ( Maths_IsPositionOnRightSide( &game->player.position, node->linedef ) )
       {
          return Game_CheckRayCollisionRecursive( game, node->rightChild, angle, intersectionPoint, intersectingLinedef )
             ? True

@@ -138,7 +138,7 @@
     <ClInclude Include="..\..\Wolfensteino\input.h" />
     <ClInclude Include="..\..\Wolfensteino\map.h" />
     <ClInclude Include="..\..\Wolfensteino\player.h" />
-    <ClInclude Include="..\..\Wolfensteino\map_math.h" />
+    <ClInclude Include="..\..\Wolfensteino\maths.h" />
     <ClInclude Include="..\..\Wolfensteino\screen.h" />
     <ClInclude Include="..\..\Wolfensteino\vector.h" />
     <ClInclude Include="..\..\Wolfensteino\game.h" />
@@ -149,7 +149,7 @@
     <ClCompile Include="..\..\Wolfensteino\game.c" />
     <ClCompile Include="..\..\Wolfensteino\input.c" />
     <ClCompile Include="..\..\Wolfensteino\player.c" />
-    <ClCompile Include="..\..\Wolfensteino\map_math.c" />
+    <ClCompile Include="..\..\Wolfensteino\maths.c" />
     <ClCompile Include="..\..\Wolfensteino\screen.c" />
     <ClCompile Include="..\..\Wolfensteino\game_data.c" />
     <ClCompile Include="win_clock.c" />
